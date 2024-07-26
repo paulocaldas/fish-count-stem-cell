@@ -1,0 +1,9 @@
+# open anaconda prompt and install the following packages
+
+# install packages
+pip install opencv-python
+pip install scikit-image
+pip install czifile
+
+# update conda
+conda update conda
