@@ -57,12 +57,12 @@ def AddLabelsToFigure(ax, regionprops_table, X = "weighted_centroid-1", Y = "wei
     return ax
 
 def GetRegionProps(markers, im):
-
+    
     markers = markers.astype('int8')
     
     if len(markers.shape) == 3: 
-        markers = np.max(markers, axis =2)    
-    
+        markers = np.max(markers, axis =2)
+        
     props = sk.measure.regionprops_table(markers, im,
             properties = ['label', 'area', 'weighted_centroid', 'major_axis_length', 'minor_axis_length', 'mean_intensity', 'coords'])
     
