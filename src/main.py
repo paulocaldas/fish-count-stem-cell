@@ -45,7 +45,8 @@ def NuclearSegmentation(czi_file, sigma = 51, foci_offset = -2, cell_dist = 40,
     # get properties for dapi
     dapi_props = utils.GetRegionProps(im_markers, im_dapi)
     
-    # visualize segmentation result
+    # VISUALIZE SEGMENTATION RESULT
+	
     # figure props
     fig, axis = plt.subplots(2, 3, figsize = (6,4), dpi = 180, constrained_layout=True)
     font = 6; 
@@ -76,6 +77,29 @@ def NuclearSegmentation(czi_file, sigma = 51, foci_offset = -2, cell_dist = 40,
         
     # save figure
     utils.saveFig(os.path.basename(czi_file).strip('.czi') + '_OutImg.png', folder = output_folder+'/')
+	
+	# COUNT NUMBER OF FOCI IN EACH CELL
+	
+	# save counts: number of foci for each cell
+    red_counts = utils.CountCellFoci(red_props, dapi_props, 'red_foci')
+    green_counts = utils.CountCellFoci(green_props, dapi_props, 'green_foci')
+    # merge everything and rename cols
+    foci_count = red_counts.merge(green_counts)
+    foci_count.columns = ['cell_id', 'red(#)','green(#)']
+    
+    # save final table for each image
+    name = os.path.basename(czi_file).strip('.czi') + '_OutTable.csv'
+    foci_count.to_csv(output_folder + '/' + name, index = False)
+    
+    # GROUP CELL COUNTS ACCORDING TO MARIA'S CATEGORIES FOR XIST/XACT
+    header = os.path.basename(czi_file).replace('.czi', '')
+    count_categories = utils.GroupCellCounts(foci_count, header)
+    
+    # save count categories table for each image
+    name = os.path.basename(czi_file).strip('.czi') + '_OutCountCats.csv'
+    count_categories.to_csv(output_folder + '/' + name, index = True)
+    
+    print('COUNTS TABLE AND SEGMENT IMAGE WERE SAVED IN THE FOLDER:{}'.format(output_folder.upper()))
     
 #if __name__ == "__main__":
 #    # Add your main execution code here
